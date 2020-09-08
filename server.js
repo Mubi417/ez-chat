@@ -18,6 +18,8 @@ io.on('connection', socket => {
     })
 })
 
-server.listen(3030 || process.env.PORT, () => {
-    console.log(`Port started on 3030`)
+const port = process.env.PORT || 3000
+
+server.listen(port, () => {
+    console.log(`Port started on ${port}`)
 })

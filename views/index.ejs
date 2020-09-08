@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        #message-holder{
+            overflow-y: auto;
+            margin-bottom: 8vh;
+        }
+
+        #message-holder > div {
+            background-color: lightblue;
+            border-radius: 20px;
+        }
+
+        div > p {
+            font-size: 1.5em;
+            padding: 12px;
+        }
+
+        input {
+            position: fixed;
+            bottom: 0;
+            box-sizing: border-box;
+            height: 8vh;
+            font-size: 1.5em;
+        }
+
+        #text {
+            left: 0;
+            width: 80%;
+        }
+        
+        #button {
+            right: 0;
+            width: 20%;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div id="message-holder"></div>
+        <form id="form" action="">
+            <input id="text" type="text" autocomplete="off" /><input id="button" type="submit" value="send">
+        </form>
+    </div>
+</body>
+<script>
+    const socket = io()
+    const input = document.getElementById('text')
+    const chatBox = document.getElementById('message-holder')
+    const form = document.getElementById('form')
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault()
+        const message = input.value
+        const div = document.createElement('div')
+        const p = document.createElement('p')
+        p.textContent = message
+        p.style.textAlign = 'right'
+        div.append(p)
+        chatBox.append(div)
+        input.value = ''
+        socket.emit('sent-message', message)
+        window.scrollTo(0,document.body.scrollHeight);
+    })
+
+    socket.on('message-received', message => {
+        const div = document.createElement('div')
+        const p = document.createElement('p')
+        p.textContent = message
+        div.style.backgroundColor = 'grey'
+        div.append(p)
+        chatBox.append(div)
+        window.scrollTo(0,document.body.scrollHeight);
+    })
+
+</script>
+</html>
